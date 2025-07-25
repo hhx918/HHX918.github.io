@@ -1093,21 +1093,122 @@
     </div>
   </section>
 
-  <!-- HuggingFace Dataset -->
+    <!-- HuggingFace Dataset -->
   <section id="hf-dataset">
     <h2>Huggingface Dataset</h2>
+    <p>Our benchmark dataset comprises 1,283 adversarial prompts, drawn from two sources to balance broad adversarial coverage and high developmental relevance. First, we adapted 200 sample prompts from the SproutBench dataset using GPT-4, tailoring them to three age groups (0–6, 7–12, 13–18). The adaptation process adjusted vocabulary and complexity to match developmental stages (e.g., simple phrases for 0–6, nuanced emotional queries for 13–18). The total of 1,283 prompts was chosen to ensure comprehensive coverage of risk behaviors while maintaining feasibility for evaluation.</p>
     <table class="hf-dataset">
       <thead>
-        <tr><th>Split</th><th>Size</th><th>Examples</th></tr>
+        <tr>
+          <th>Age Group</th>
+          <th>Behavior Type</th>
+          <th>Count</th>
+        </tr>
       </thead>
-      <p>Our benchmark dataset comprises 1,283 adversarial prompts, drawn from two sources to balance broad adversarial coverage and high developmental relevance. First, we adapted 200 sample prompts from the SproutBench dataset using GPT-4, tailoring them to three age groups (0–6, 7–12, 13–18). The adaptation process adjusted vocabulary and complexity to match developmental stages (e.g., simple phrases for 0–6, nuanced emotional queries for 13–18). The total of 1,283 prompts was chosen to ensure comprehensive coverage of risk behaviors while maintaining feasibility for evaluation.</p>
       <tbody>
-        <tr><td>train</td><td>2.5 GB</td><td>120 000</td></tr>
-        <tr><td>validation</td><td>0.3 GB</td><td>15 000</td></tr>
-        <tr><td>test</td><td>0.3 GB</td><td>15 000</td></tr>
+        <tr>
+          <td>0-6</td>
+          <td>Unconscious Sensitive Word Input</td>
+          <td>65</td>
+        </tr>
+        <tr>
+          <td>0-6</td>
+          <td>Over-reliance on AI Companionship</td>
+          <td>40</td>
+        </tr>
+        <tr>
+          <td>0-6</td>
+          <td>Need for Emotional Expression</td>
+          <td>43</td>
+        </tr>
+        <tr>
+          <td>0-6</td>
+          <td>Imitating Game Behavior</td>
+          <td>134</td>
+        </tr>
+        <tr>
+          <td>7-12</td>
+          <td>Command Manipulation Attempts</td>
+          <td>51</td>
+        </tr>
+        <tr>
+          <td>7-12</td>
+          <td>Fictional Identity or Scenarios</td>
+          <td>71</td>
+        </tr>
+        <tr>
+          <td>7-12</td>
+          <td>Imitating Online Prank Culture</td>
+          <td>97</td>
+        </tr>
+        <tr>
+          <td>7-12</td>
+          <td>Inducing Sensitive Content</td>
+          <td>71</td>
+        </tr>
+        <tr>
+          <td>7-12</td>
+          <td>Testing Model Tolerance</td>
+          <td>111</td>
+        </tr>
+        <tr>
+          <td>7-12</td>
+          <td>Testing Privacy Boundaries</td>
+          <td>40</td>
+        </tr>
+        <tr>
+          <td>7-12</td>
+          <td>Social Show-off Motivation</td>
+          <td>40</td>
+        </tr>
+        <tr>
+          <td>7-12</td>
+          <td>Imitating Violent Games</td>
+          <td>40</td>
+        </tr>
+        <tr>
+          <td>7-12</td>
+          <td>Disguised Questioning</td>
+          <td>40</td>
+        </tr>
+        <tr>
+          <td>7-12</td>
+          <td>Malicious Use of AI</td>
+          <td>40</td>
+        </tr>
+        <tr>
+          <td>13-18</td>
+          <td>Academic Cheating Attempts</td>
+          <td>48</td>
+        </tr>
+        <tr>
+          <td>13-18</td>
+          <td>Bypassing Restrictive Topics</td>
+          <td>99</td>
+        </tr>
+        <tr>
+          <td>13-18</td>
+          <td>Emotional Manipulation Testing</td>
+          <td>98</td>
+        </tr>
+        <tr>
+          <td>13-18</td>
+          <td>Ideological Challenges</td>
+          <td>53</td>
+        </tr>
+        <tr>
+          <td>13-18</td>
+          <td>Value Conflict Testing</td>
+          <td>67</td>
+        </tr>
+        <tr>
+          <td>13-18</td>
+          <td>Social Engineering Testing</td>
+          <td>35</td>
+        </tr>
       </tbody>
     </table>
-     </section>
+  </section>
 
   <!-- Overall Pipeline -->
   <section id="pipeline">
