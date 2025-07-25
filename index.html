@@ -1245,7 +1245,7 @@ table.hf-dataset tr:hover {
     </table>
   </div>
 </section>
-
+<!-- Benchmark -->
 <section id="pipeline">
   <h2>Benchmark</h2>
   <p>These six charts present the performance of a selected set of representative models across different safety-related dimensions—Safety, Interactivity, Guidance and Educational Value, Risk Prevention, Age Appropriateness, and their Overall Average. For each dimension, the models’ scores are compared across three age groups (0–6, 7–12, 13–18), highlighting how well they adapt to varying developmental needs. Larger models, such as LLaMA2:70B and hermes3:70B, consistently achieve higher and more stable scores across all age groups, while smaller models, like tinyllama:1.1B, show noticeable performance gaps, especially for younger users. These visualizations collectively illustrate both the scaling effects of model size and the age-specific variations in safety and developmental alignment.</p>
@@ -1253,6 +1253,15 @@ table.hf-dataset tr:hover {
    <div class="center-image">
     <img src="./images/1.jpg" alt="Benchmark Visualization">
   </div>
+  <p>Model Family Performance Across Age Groups
+This line chart compares the average performance of different model families (e.g., llama, gemma, qwen) across three age groups (0–6, 7–12, 13–18).Larger families like llama and gemma remain consistently strong across all ages, while smaller families such as tinyllama show noticeable variability, performing weakest for younger users.</p>
+<img src="./images/2.jpg" alt="Benchmark Visualization" style="width:100%; max-width:1200px; height:auto; display:block; margin:20px auto;">
+  <p>Model Family Performance Across Dimensions
+This figure illustrates how model families score across five safety-related dimensions (Age Appropriateness, Safety, Interactivity, Guidance & Educational Value, and Risk Prevention).Most families perform highest in Safety, but drop significantly in Interactivity and Guidance & Educational Value, indicating these areas are more challenging.</p>
+<img src="./images/3.jpg" alt="Benchmark Visualization" style="width:100%; max-width:1200px; height:auto; display:block; margin:20px auto;">
+  <p>KMeans Clustering of Target Models (PCA Projection)
+This scatter plot shows the distribution of individual models in a reduced 2D space (PCA), with clusters formed by KMeans.</p>
+<img src="./images/4.jpg" alt="Benchmark Visualization" style="width:100%; max-width:1200px; height:auto; display:block; margin:20px auto;">
 </section>
 
   <section id="bibtex">
