@@ -53,30 +53,35 @@
 }
     
     /* HuggingFace Dataset 表格居中 */
-       table.hf-dataset {
-    margin: 0 auto;
-    border-collapse: collapse;
-    width: 70%;
-    background: var(--bg);
-  }
-  table.hf-dataset th,
-  table.hf-dataset td {
-    border: 1px solid #444;
-    padding: 8px 12px;
-    text-align: center;
-  }
-  table.hf-dataset th {
-    background: #333;
-  }
-  table.hf-dataset tr:nth-child(odd) {
-    background: #333;
-  }
-  table.hf-dataset tr:nth-child(even) {
-    background: #444;
-  }
-  table.hf-dataset tr:hover {
-    background: #555;
-  }
+     table.hf-dataset {
+  width: 100%; /* 确保表格宽度为100% */
+  border-collapse: collapse;
+  table-layout: auto; /* 使表格根据内容自动调整单元格宽度 */
+  background: var(--bg);
+}
+
+table.hf-dataset th,
+table.hf-dataset td {
+  border: 1px solid #444;
+  padding: 8px 12px;
+  text-align: left; /* 左对齐文本 */
+}
+
+table.hf-dataset th {
+  background: #333;
+}
+
+table.hf-dataset tr:nth-child(odd) {
+  background: #333;
+}
+
+table.hf-dataset tr:nth-child(even) {
+  background: #444;
+}
+
+table.hf-dataset tr:hover {
+  background: #555;
+}
     
     /* Overall Pipeline 六张指标图 */
     .pipeline-grid{
@@ -244,11 +249,12 @@
     
     /* 以下是新增和修改的样式 */
     .model-table-container {
-      max-height: 480px;
-      overflow-y: auto;
-      border: 1px solid #444;
-      border-top: none;
-    }
+  max-height: 480px; /* 设置最大高度 */
+  overflow-y: auto; /* 启用垂直滚动 */
+  border: 1px solid #444;
+  border-top: none;
+  width: 100%; /* 确保容器宽度为100% */
+}
     
     .model-table {
       width:100%;
@@ -1110,10 +1116,12 @@
   </section>
 
         <!-- HuggingFace Dataset -->
-  <section id="hf-dataset">
-    <h2>Huggingface Dataset</h2>
-    <p>Our benchmark dataset comprises 1,283 adversarial prompts, drawn from two sources to balance broad adversarial coverage and high developmental relevance. First, we adapted 200 sample prompts from the SproutBench dataset using GPT-4, tailoring them to three age groups (0–6, 7–12, 13–18). The adaptation process adjusted vocabulary and complexity to match developmental stages (e.g., simple phrases for 0–6, nuanced emotional queries for 13–18). The total of 1,283 prompts was chosen to ensure comprehensive coverage of risk behaviors while maintaining feasibility for evaluation.</p>
-     <div class="model-table-container">
+<section id="hf-dataset">
+  <h2>Huggingface Dataset</h2>
+  <p>Our benchmark dataset comprises 1,283 adversarial prompts, drawn from two sources to balance broad adversarial coverage and high developmental relevance. First, we adapted 200 sample prompts from the SproutBench dataset using GPT-4, tailoring them to three age groups (0–6, 7–12, 13–18). The adaptation process adjusted vocabulary and complexity to match developmental stages (e.g., simple phrases for 0–6, nuanced emotional queries for 13–18). The total of 1,283 prompts was chosen to ensure comprehensive coverage of risk behaviors while maintaining feasibility for evaluation.</p>
+  
+  <!-- 添加滚动容器 -->
+  <div class="model-table-container">
     <table class="hf-dataset">
       <thead>
         <tr>
