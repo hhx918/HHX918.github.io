@@ -255,7 +255,23 @@ table.hf-dataset tr:hover {
   border-top: none;
   width: 100%; /* 确保容器宽度为100% */
 }
-    
+
+      /* 滚动条样式 */
+.model-table-container::-webkit-scrollbar {
+  width: 12px; /* 滚动条宽度 */
+}
+
+.model-table-container::-webkit-scrollbar-track {
+  background: #222; /* 滚动条轨道背景色 */
+  border-radius: 10px; /* 滚动条轨道圆角 */
+}
+
+.model-table-container::-webkit-scrollbar-thumb {
+  background: #333; /* 滚动条滑块背景色 */
+  border-radius: 10px; /* 滚动条滑块圆角 */
+  border: 2px solid #222; /* 滚动条滑块边框 */
+}
+      
     .model-table {
       width:100%;
       border-collapse: collapse;
