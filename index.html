@@ -51,18 +51,42 @@
     }
     
     /* HuggingFace Dataset 表格居中 */
-    table.hf-dataset{
-      margin:0 auto;
-      border-collapse:collapse;
-      width:70%;
-    }
-    table.hf-dataset th,
-    table.hf-dataset td{
-      border:1px solid #444;
-      padding:8px 12px;
-      text-align:center;
-    }
-    table.hf-dataset th{background:#333;}
+     table.hf-dataset {
+    margin: 0 auto;
+    border-collapse: collapse;
+    width: 70%;
+    background: var(--bg);
+  }
+  table.hf-dataset th,
+  table.hf-dataset td {
+    border: 1px solid #444;
+    padding: 8px 12px;
+    text-align: center;
+    transition: background-color 0.3s;
+  }
+  table.hf-dataset th {
+    background: #333;
+  }
+  table.hf-dataset tr:hover {
+    background: #333;
+  }
+  table.hf-dataset td {
+    position: relative;
+  }
+  table.hf-dataset td::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, var(--green) 0%, var(--blue) 100%);
+    opacity: 0.1;
+    transition: opacity 0.3s;
+  }
+  table.hf-dataset tr:hover td::before {
+    opacity: 0.3;
+  }
     
     /* Overall Pipeline 六张指标图 */
     .pipeline-grid{
@@ -1100,100 +1124,100 @@
     <h2>Huggingface Dataset</h2>
     <p>Our benchmark dataset comprises 1,283 adversarial prompts, drawn from two sources to balance broad adversarial coverage and high developmental relevance. First, we adapted 200 sample prompts from the SproutBench dataset using GPT-4, tailoring them to three age groups (0–6, 7–12, 13–18). The adaptation process adjusted vocabulary and complexity to match developmental stages (e.g., simple phrases for 0–6, nuanced emotional queries for 13–18). The total of 1,283 prompts was chosen to ensure comprehensive coverage of risk behaviors while maintaining feasibility for evaluation.</p>
     <table class="hf-dataset">
-      <thead>
-        <tr>
-          <th>Age Group</th>
-          <th>Behavior Type</th>
-          <th>Count</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td rowspan="4">0-6</td>
-          <td>Unconscious Sensitive Word Input</td>
-          <td>65</td>
-        </tr>
-        <tr>
-          <td>Over-reliance on AI Companionship</td>
-          <td>40</td>
-        </tr>
-        <tr>
-          <td>Need for Emotional Expression</td>
-          <td>43</td>
-        </tr>
-        <tr>
-          <td>Imitating Game Behavior</td>
-          <td>134</td>
-        </tr>
-        <tr>
-          <td rowspan="7">7-12</td>
-          <td>Command Manipulation Attempts</td>
-          <td>51</td>
-        </tr>
-        <tr>
-          <td>Fictional Identity or Scenarios</td>
-          <td>71</td>
-        </tr>
-        <tr>
-          <td>Imitating Online Prank Culture</td>
-          <td>97</td>
-        </tr>
-        <tr>
-          <td>Inducing Sensitive Content</td>
-          <td>71</td>
-        </tr>
-        <tr>
-          <td>Testing Model Tolerance</td>
-          <td>111</td>
-        </tr>
-        <tr>
-          <td>Testing Privacy Boundaries</td>
-          <td>40</td>
-        </tr>
-        <tr>
-          <td>Social Show-off Motivation</td>
-          <td>40</td>
-        </tr>
-        <tr>
-          <td rowspan="4">7-12</td>
-          <td>Imitating Violent Games</td>
-          <td>40</td>
-        </tr>
-        <tr>
-          <td>Disguised Questioning</td>
-          <td>40</td>
-        </tr>
-        <tr>
-          <td>Malicious Use of AI</td>
-          <td>40</td>
-        </tr>
-        <tr>
-          <td>Academic Cheating Attempts</td>
-          <td>48</td>
-        </tr>
-        <tr>
-          <td rowspan="5">13-18</td>
-          <td>Bypassing Restrictive Topics</td>
-          <td>99</td>
-        </tr>
-        <tr>
-          <td>Emotional Manipulation Testing</td>
-          <td>98</td>
-        </tr>
-        <tr>
-          <td>Ideological Challenges</td>
-          <td>53</td>
-        </tr>
-        <tr>
-          <td>Value Conflict Testing</td>
-          <td>67</td>
-        </tr>
-        <tr>
-          <td>Social Engineering Testing</td>
-          <td>35</td>
-        </tr>
-      </tbody>
-    </table>
+  <thead>
+    <tr>
+      <th>Age Group</th>
+      <th>Behavior Type</th>
+      <th>Count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td rowspan="4">0-6</td>
+      <td>Unconscious Sensitive Word Input</td>
+      <td>65</td>
+    </tr>
+    <tr>
+      <td>Over-reliance on AI Companionship</td>
+      <td>40</td>
+    </tr>
+    <tr>
+      <td>Need for Emotional Expression</td>
+      <td>43</td>
+    </tr>
+    <tr>
+      <td>Imitating Game Behavior</td>
+      <td>134</td>
+    </tr>
+    <tr>
+      <td rowspan="7">7-12</td>
+      <td>Command Manipulation Attempts</td>
+      <td>51</td>
+    </tr>
+    <tr>
+      <td>Fictional Identity or Scenarios</td>
+      <td>71</td>
+    </tr>
+    <tr>
+      <td>Imitating Online Prank Culture</td>
+      <td>97</td>
+    </tr>
+    <tr>
+      <td>Inducing Sensitive Content</td>
+      <td>71</td>
+    </tr>
+    <tr>
+      <td>Testing Model Tolerance</td>
+      <td>111</td>
+    </tr>
+    <tr>
+      <td>Testing Privacy Boundaries</td>
+      <td>40</td>
+    </tr>
+    <tr>
+      <td>Social Show-off Motivation</td>
+      <td>40</td>
+    </tr>
+    <tr>
+      <td rowspan="4">7-12</td>
+      <td>Imitating Violent Games</td>
+      <td>40</td>
+    </tr>
+    <tr>
+      <td>Disguised Questioning</td>
+      <td>40</td>
+    </tr>
+    <tr>
+      <td>Malicious Use of AI</td>
+      <td>40</td>
+    </tr>
+    <tr>
+      <td>Academic Cheating Attempts</td>
+      <td>48</td>
+    </tr>
+    <tr>
+      <td rowspan="5">13-18</td>
+      <td>Bypassing Restrictive Topics</td>
+      <td>99</td>
+    </tr>
+    <tr>
+      <td>Emotional Manipulation Testing</td>
+      <td>98</td>
+    </tr>
+    <tr>
+      <td>Ideological Challenges</td>
+      <td>53</td>
+    </tr>
+    <tr>
+      <td>Value Conflict Testing</td>
+      <td>67</td>
+    </tr>
+    <tr>
+      <td>Social Engineering Testing</td>
+      <td>35</td>
+    </tr>
+  </tbody>
+</table>
     <style>
       table.hf-dataset {
         width: 90%; /* 调整表格宽度 */
