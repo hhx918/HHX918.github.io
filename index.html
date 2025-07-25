@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>SproutBench: A Benchmark for Safe and Ethical Large Language Models for Youth</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <style>
+    :root{
+      --accent:#000;
+      --bg:#222;
+      --text:#fff;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{
+      font-family:'Arial',sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.6;
+    }
+
+    .crown {
+  font-size: 1.2em;
+  display: block;
+  margin: 0 auto;
+}
+    
+    header{
+      background:#333;
+      padding:20px 8%;
+      border-bottom:1px solid #444;
+      text-align:center;
+    }
+    header h1{font-size:2.4em;font-weight:700;margin-bottom:6px;}
+    header .subtitle{font-size:1.1em;color:#ccc;margin-bottom:20px;}
+    
+    main{max-width:1200px;margin:0 auto;padding:20px 8%;}
+    section{margin-bottom:50px;}
+    h2{
+      font-size:1.8em;
+      margin-bottom:15px;
+      color:white; /* 修改小标题颜色为白色 */
+      font-weight:700;
+    }
+    p{margin-bottom:1em;}
+    
+    /* Abstract 文字区域 */
+    .abstract-text{
+      max-width:800px;
+      margin:0 auto 40px;
+      text-align:justify;
+    }
+    
+    /* HuggingFace Dataset 表格居中 */
+    table.hf-dataset{
+      margin:0 auto;
+      border-collapse:collapse;
+      width:70%;
+    }
+    table.hf-dataset th,
+    table.hf-dataset td{
+      border:1px solid #444;
+      padding:8px 12px;
+      text-align:center;
+    }
+    table.hf-dataset th{background:#333;}
+    
+    /* Overall Pipeline 六张指标图 */
+    .pipeline-grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 100px;
+      justify-items: center;
+    }
+    .pipeline-grid .pipeline-item{
+      text-align:center;
+    }
+    .pipeline-grid img{
+      width:100%;
+      max-width:500px;
+      border-radius:4px;
+      box-shadow:0 2px 6px rgba(255,255,255,0.15);
+    }
+    .pipeline-grid .caption{
+      margin-top:5px;
+      font-size:.9em;
+      color:#ccc;
+    }
+    
+    /* LLM Leaderboard 表格居中 */
+    table.leaderboard{
+      margin:0 auto;
+      border-collapse:collapse;
+      width:90%;
+      font-size:.95em;
+    }
+    table.leaderboard th,
+    table.leaderboard td{
+      border:1px solid #444;
+      padding:6px 10px;
+      text-align:center;
+    }
+    table.leaderboard th{background:#333;}
+    
+    footer{text-align:center;padding:30px 0;color:#999;font-size:.9em;}
+    
+    /* 模型部分样式 */
+    .model-search-container {
+      margin-bottom: 15px;
+      position: relative;
+    }
+    
+    .model-search {
+      width: 100%;
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid #444;
+      background-color: #333;
+      color: #fff;
+      font-size: 14px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    .model-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+    }
+    
+    .model-count {
+      color: #999;
+      font-size: 12px;
+    }
+    
+    .advanced-filter-btn {
+      background-color: #000;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    
+    .quick-filter-tabs {
+  display: flex;
+  gap: 20px; /* 增加选项之间的间隔 */
+  margin-top: 15px;
+}
+
+   .quick-filter-tabs .tab {
+  background-color: #444; /* 选项卡背景色 */
+  padding: 12px 20px; /* 增加填充以使选项卡更大 */
+  border-radius: 4px; /* 圆角 */
+  font-size: 14px; /* 字体大小 */
+  cursor: pointer;
+  color: #fff; /* 字体颜色改为白色 */
+  text-align: center; /* 文本居中 */
+}
+
+  .quick-filter-tabs .tab-active {
+  background-color: lightblue; /* 选中时的背景色 */
+  color: #fff; /* 选中时字体颜色保持白色 */
+}
+    
+    .advanced-filter-panel {
+      display: none;
+      background-color: #333;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border: 1px solid #444;
+    }
+    
+    .filter-section {
+      margin-bottom: 20px;
+    }
+    
+    .filter-section h3 {
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: #fff;
+    }
+    
+    .filter-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    
+    .filter-options label {
+      background-color: #444;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+      color: #fff;
+    }
+    
+    .filter-options label span {
+      margin-left: 5px;
+      color: #ccc;
+    }
+    
+    .filter-slider {
+      margin: 10px 0;
+    }
+    
+    .filter-slider input[type="range"] {
+      width: 100%;
+    }
+    
+    .slider-values {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 5px;
+      color: #999;
+      font-size: 12px;
+    }
+    
+    .model-metrics {
+      display: grid;
+      grid-template-columns: 50px 200px repeat(8, 1fr);
+      background-color: #444;
+      padding: 10px;
+      border-radius: 8px 8px 0 0;
+      font-size: 12px;
+      color: #fff;
+    }
+    
+    /* 以下是新增和修改的样式 */
+    .model-table-container {
+      max-height: 480px;
+      overflow-y: auto;
+      border: 1px solid #444;
+      border-top: none;
+    }
+    
+    .model-table {
+      width:100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    
+    .model-table th {
+      padding: 12px 8px;
+      text-align: left;
+      border-bottom: 2px solid #444;
+      font-weight: bold;
+      background-color: #333;
+      position: sticky;
+      top: 0;
+    }
+    
+    .model-table td {
+      padding: 10px 8px;
+      text-align: left;
+      border-bottom: 1px solid #444;
+    }
+    
+    .model-rank {
+  text-align: center;
+  padding: 0 5px;
+}
+    
+    .model-name {
+      font-weight: 500;
+      color: lightblue; /* 修改模型名称颜色为浅蓝色 */
+    }
+    
+    .metric-value {
+      text-align: right;
+      padding-right: 10px;
+    }
+    
+    /* 选项卡样式 */
+    .table-options {
+      display: flex;
+      justify-content: flex-end;
+      gap: 15px;
+      margin-top: 10px;
+      font-size: 12px;
+      color: #999;
+    }
+    
+    .table-options a {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    /* 新增样式：去掉模型名称链接的下划线 */
+    .model-name a {
+      color: #FF69B4;
+      text-decoration: none;
+    }
+
+    /* 新增样式：设置面板的样式 */
+    .settings-panel {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #333;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      padding: 20px;
+      width: 400px;
+      max-width: 90vw;
+      z-index: 1000;
+    }
+
+    .settings-panel h3 {
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .settings-panel .reset-btn {
+      background-color: #444;
+      border: 1px solid #555;
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-size: 12px;
+      cursor: pointer;
+      color: #fff;
+    }
+
+    .settings-panel .info-icon {
+      font-size: 14px;
+      color: #999;
+      margin-left: 5px;
+    }
+
+    .settings-panel .option-group {
+      margin-bottom: 20px;
+    }
+
+    .settings-panel .option-group h4 {
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: #fff;
+    }
+
+    .settings-panel .option-buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .settings-panel .option-btn {
+      background-color: #444;
+      border: none;
+      border-radius: 4px;
+      padding: 6px 12px;
+      font-size: 14px;
+      cursor: pointer;
+      color: #fff;
+    }
+
+    .settings-panel .option-btn.active {
+      background-color: lightblue;
+      color: white;
+    }
+
+    /* 新增样式：使灰色部分变成按钮 */
+    .tag-btn {
+      background-color: #444;
+      border: none;
+      border-radius: 4px;
+      padding: 6px 12px;
+      font-size: 14px;
+      cursor: pointer;
+      margin: 4px;
+      transition: background-color 0.3s;
+      color: #fff;
+    }
+
+    .tag-btn:hover {
+      background-color: #333;
+    }
+
+    .tag-btn.active {
+      background-color: lightblue; /* 修改选中时的颜色为浅蓝色 */
+    }
+
+    .tag-btn {
+      background-color: #444; /* 未选中时的原色 */
+    }
+    
+    /* 修改后的样式：将第四张图的亮绿色更改为暗绿色 */
+    .metric-value {
+      background: linear-gradient(to right, #4CAF50 0%, #4CAF50 52.08%, transparent 52.08%, transparent 100%);
+    }
+
+    /* 相关链接样式 */
+    #links a {
+      color: lightblue; /* Related Links中的链接颜色改为浅蓝色 */
+    }
+  </style>
+</head>
+
+<body>
+ <header>
+  <h1>SproutBench: A Benchmark for Safe and Ethical Large Language Models for Youth</h1>
+  <div class="affil" style="display: flex; justify-content: center; align-items: center; margin-top: 15px;">
+    <div style="position: relative;">
+      <span style="font-size: 1em;">作者姓名一</span>
+      <span style="vertical-align: middle; font-size: 0.7em; position: relative; top: -15px; right: -5px;">1</span>
+    </div>
+    <div style="position: relative; margin-left: 20px;">
+      <span style="font-size: 1em;">作者姓名二</span>
+      <span style="vertical-align: middle; font-size: 0.7em; position: relative; top: -15px; right: -5px;">2</span>
+    </div>
+  </div>
+  <div class="affil" style="display: flex; justify-content: center; align-items: center; margin-top: 5px;">
+    <div style="position: relative;">
+      <span style="vertical-align: middle; font-size: 0.7em; position: relative; top: -15px; right: -5px;">1</span>
+      <span style="font-size: 1em;">University of Washington</span>
+    </div>
+    <div style="position: relative; margin-left: 20px;">
+      <span style="vertical-align: middle; font-size: 0.7em; position: relative; top: -15px; right: -5px;">2</span>
+      <span style="font-size: 1em;">Google Research</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- 新增 Abstract 部分 -->
+  <section id="abstract">
+    <h2>Abstract</h2>
+    <div class="abstract-text">
+      <p>
+        The rapid proliferation of large language models (LLMs) in applications targeting children and adolescents necessitates a fundamental reassessment of prevailing AI safety frameworks, which are largely tailored to adult users and neglect the distinct developmental vulnerabilities of minors. This paper highlights key deficiencies in existing LLM safety benchmarks, including their inadequate coverage of age-specific cognitive, emotional, and social risks spanning early childhood (ages 0–6), middle childhood (7–12), and adolescence (13–18). To bridge these gaps, we introduce SproutBench, an innovative evaluation suite comprising 1,283 developmentally grounded adversarial prompts designed to probe risks such as emotional dependency, privacy violations, and imitation of hazardous behaviors. Through rigorous empirical evaluation of 35 diverse LLMs, we uncover substantial safety vulnerabilities, corroborated by robust inter-dimensional correlations (e.g., between Safety and Risk Prevention, $\rho$ = 0.86) and a notable inverse relationship between Interactivity and Age Appropriateness ($\rho$ = -0.48). These insights yield practical guidelines for advancing child-centric AI design and deployment.
+      </p>
+    </div>
+  </section>
+
+  <!-- 模型部分 -->
+  <section id="model">
+    <h2>Model</h2>
+    <div class="subtitle" style="text-align: center; margin-bottom: 20px;">Comparing Large Language Models in an open and reproducible way</div>
+    
+    <!-- 模型搜索区域 -->
+    <div class="model-search-container">
+      <input type="text" class="model-search" placeholder="Search by model name • try 'meta @architecture:llama @license: mit'">
+      <div class="model-info">
+        <span class="model-count">30 / 30</span>
+        <button class="advanced-filter-btn">Advanced Filters</button>
+      </div>
+      <p style="font-size:12px; color:#999; margin-top:8px;">Supports strict search and regex • Use semicolons for multiple terms</p>
+    </div>
+    
+    <!-- 快速筛选选项卡 -->
+    <div class="quick-filter-tabs">
+      <div class="tab">Quick Filters</div>
+      <div class="tab">For Edge Devices</div>
+      <div class="tab">For Consumers</div>
+      <div class="tab">Mid-range</div>
+      <div class="tab">For the GPU-rich</div>
+      <div class="tab">Only Official Providers</div>
+    </div>
+    
+    <!-- 高级筛选面板 -->
+    <div class="advanced-filter-panel">
+      <div class="filter-section">
+        <h3>Precision format</h3>
+        <div class="filter-options">
+          <label><input type="checkbox" checked> bfloat16 <span>3423</span></label>
+          <label><input type="checkbox" checked> float16 <span>1151</span></label>
+          <label><input type="checkbox" checked> 4bit <span>2</span></label>
+        </div>
+      </div>
+      
+      <div class="filter-section">
+        <h3>Parameters</h3>
+        <div class="filter-slider">
+          <input type="range" min="1" max="140" value="70">
+          <div class="slider-values">
+            <span>All 7B</span>
+            <span>70B</span>
+            <span>140B</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="filter-section">
+        <h3>Model Type</h3>
+        <div class="filter-options">
+          <label><input type="checkbox" checked> Pretrained <span>333</span></label>
+          <label><input type="checkbox"> Continuously Pretrained <span>0</span></label>
+          <label><input type="checkbox" checked> Fine-tuned <span>1785</span></label>
+          <label><input type="checkbox"> Chat <span>718</span></label>
+          <label><input type="checkbox" checked> Merge <span>1724</span></label>
+          <label><input type="checkbox" checked> Multimodal <span>9</span></label>
+        </div>
+      </div>
+      
+      <div class="filter-section">
+        <h3>Flags</h3>
+        <div class="filter-options">
+          <label><input type="checkbox" checked> Mixture of Experts <span>76</span></label>
+          <label><input type="checkbox" checked> Merged model <span>715</span></label>
+          <label><input type="checkbox" checked> Potentially contaminated model <span>1</span></label>
+          <label><input type="checkbox" checked> Unavailable model <span>1683</span></label>
+        </div>
+      </div>
+      
+      <div class="filter-section">
+        <h3>Official Models</h3>
+        <p style="color: #999; font-size:12px;">Show only models that are officially provided and maintained by their original creators.</p>
+        <label><input type="checkbox"> Only Official Providers <span>470</span></label>
+      </div>
+    </div>
+    
+    <!-- 表格选项 -->
+    <div class="table-options">
+      <a href="#" id="table-options-link">⚙️ table options</a>
+      <a href="#" id="column-visibility-link">📊 column visibility</a>
+    </div>
+
+    <!-- 添加设置面板 -->
+    <div class="settings-panel" id="table-options-panel">
+      <h3>
+        Table Options
+        <span class="info-icon" title="Information">ℹ️</span>
+        <button class="reset-btn">🔄 Reset</button>
+      </h3>
+      <div class="option-group">
+        <h4>Row Size</h4>
+        <div class="option-buttons">
+          <button class="option-btn active">Normal</button>
+          <button class="option-btn">Large</button>
+        </div>
+      </div>
+      <div class="option-group">
+        <h4>Score Display</h4>
+        <div class="option-buttons">
+          <button class="option-btn active">Normalized</button>
+          <button class="option-btn">Raw</button>
+        </div>
+      </div>
+      <div class="option-group">
+        <h4>Ranking Mode</h4>
+        <div class="option-buttons">
+          <button class="option-btn active">Static</button>
+          <button class="option-btn">Dynamic</button>
+        </div>
+      </div>
+      <div class="option-group">
+        <h4>Average Score Calculation</h4>
+        <div class="option-buttons">
+          <button class="option-btn active">All Scores</button>
+          <button class="option-btn">Visible Only</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-panel" id="column-visibility-panel">
+      <h3>
+        Column Visibility
+        <span class="info-icon" title="Information">ℹ️</span>
+        <button class="reset-btn">🔄 Reset</button>
+      </h3>
+      <div class="option-group">
+        <h4>Evaluation Scores <span style="color: #999;">(6/6)</span></h4>
+        <div class="tags-container">
+          <button class="tag-btn">IFEval</button>
+          <button class="tag-btn">BBH</button>
+          <button class="tag-btn">MATH</button>
+          <button class="tag-btn">GPQA</button>
+          <button class="tag-btn">MUSR</button>
+          <button class="tag-btn">MMLU-PRO</button>
+        </div>
+      </div>
+      <div class="option-group">
+        <h4>Model Information</h4>
+        <div class="tags-container">
+          <button class="tag-btn">CO₂ Cost (kg)</button>
+          <button class="tag-btn">Hub ❤️</button>
+          <button class="tag-btn">Architecture</button>
+          <button class="tag-btn">Precision</button>
+          <button class="tag-btn">Parameters (B)</button>
+          <button class="tag-btn">License</button>
+          <button class="tag-btn">Chat Template</button>
+        </div>
+      </div>
+      <div class="option-group">
+        <h4>Additional Information</h4>
+        <div class="tags-container">
+          <button class="tag-btn">Upload Date</button>
+          <button class="tag-btn">Submission Date</button>
+          <button class="tag-btn">Generation</button>
+          <button class="tag-btn">Base Model</button>
+          <button class="tag-btn">Hub Availability</button>
+          <button class="tag-btn">Only Official Providers</button>
+          <button class="tag-btn">Mixture of Experts</button>
+          <button class="tag-btn">Flag Status</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 修改后的表格部分 -->
+    <div class="model-table-container">
+      <table class="model-table">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Model</th>
+            <th>Average</th>
+            <th>MMLU</th>
+            <th>BBH</th>
+            <th>HumanEval</th>
+            <th>IFEval</th>
+            <th>MATH</th>
+            <th>GPQA</th>
+            <th>MUSR</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- 添加30行数据 -->
+          <!-- 第1-10行数据 -->
+          <tr>
+            <td class="model-rank"><span class="crown">🥇</span></td>
+            <td class="model-name"><a href="#">MaziyarPanahi/calme-3.2-instruct-78b</a></td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 52.08%, transparent 52.08%, transparent 100%);">52.08%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 80.63%, transparent 80.63%, transparent 100%);">80.63%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 62.61%, transparent 62.61%, transparent 100%);">62.61%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 40.33%, transparent 40.33%, transparent 100%);">40.33%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 20.36%, transparent 20.36%, transparent 100%);">20.36%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 38.53%, transparent 38.53%, transparent 100%);">38.53%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 70.03%, transparent 70.03%, transparent 100%);">70.03%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 66.01%, transparent 66.01%, transparent 100%);">66.01 kg</td>
+          </tr>
+          <tr>
+            <td class="model-rank"><span class="crown">🥈</span></td>
+            <td class="model-name"><a href="#">MaziyarPanahi/calme-3.1-instruct-78b</a></td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 51.29%, transparent 51.29%, transparent 100%);">51.29%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 81.36%, transparent 81.36%, transparent 100%);">81.36%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 62.41%, transparent 62.41%, transparent 100%);">62.41%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 39.27%, transparent 39.27%, transparent 100%);">39.27%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 19.46%, transparent 19.46%, transparent 100%);">19.46%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 36.5%, transparent 36.5%, transparent 100%);">36.50%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 68.72%, transparent 68.72%, transparent 100%);">68.72%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 64.44%, transparent 64.44%, transparent 100%);">64.44 kg</td>
+        </tr>
+        <tr>
+            <td class="model-rank"><span class="crown">🥉</span></td>
+            <td class="model-name"><a href="#">dfurman/CalmeRys-78B-Orpo-v0.1</a></td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 51.23%, transparent 51.23%, transparent 100%);">51.23%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 81.63%, transparent 81.63%, transparent 100%);">81.63%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 61.92%, transparent 61.92%, transparent 100%);">61.92%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 40.63%, transparent 40.63%, transparent 100%);">40.63%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 20.02%, transparent 20.02%, transparent 100%);">20.02%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 36.37%, transparent 36.37%, transparent 100%);">36.37%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 66.8%, transparent 66.8%, transparent 100%);">66.80%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 25.99%, transparent 25.99%, transparent 100%);">25.99 kg</td>
+          </tr>
+          <tr>
+            <td class="model-rank">4</td>
+            <td class="model-name"><a href="#">MaziyarPanahi/calme-2.4-rys-78b</a></td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 50.77%, transparent 50.77%, transparent 100%);">50.77%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 80.11%, transparent 80.11%, transparent 100%);">80.11%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 62.16%, transparent 62.16%, transparent 100%);">62.16%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 40.71%, transparent 40.71%, transparent 100%);">40.71%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 20.36%, transparent 20.36%, transparent 100%);">20.36%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 34.57%, transparent 34.57%, transparent 100%);">34.57%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 66.69%, transparent 66.69%, transparent 100%);">66.69%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 25.95%, transparent 25.95%, transparent 100%);">25.95 kg</td>
+          </tr>
+          <tr>
+            <td class="model-rank">5</td>
+            <td class="model-name"><a href="#">huihui-ai/Qwen2.5-72B-Instruct-abliterated</a></td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 48.11%, transparent 48.11%, transparent 100%);">48.11%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 85.93%, transparent 85.93%, transparent 100%);">85.93%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 60.49%, transparent 60.49%, transparent 100%);">60.49%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 60.12%, transparent 60.12%, transparent 100%);">60.12%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 19.35%, transparent 19.35%, transparent 100%);">19.35%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 12.34%, transparent 12.34%, transparent 100%);">12.34%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 50.41%, transparent 50.41%, transparent 100%);">50.41%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 76.77%, transparent 76.77%, transparent 100%);">76.77 kg</td>
+          </tr>
+          <tr>
+            <td class="model-rank">6</td>
+            <td class="model-name"><a href="#">Qwen/Qwen2.5-72B-Instruct</a></td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 47.96%, transparent 47.96%, transparent 100%);">47.96%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 86.38%, transparent 86.38%, transparent 100%);">86.38%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 61.87%, transparent 61.87%, transparent 100%);">61.87%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 59.82%, transparent 59.82%, transparent 100%);">59.82%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 16.67%, transparent 16.67%, transparent 100%);">16.67%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 11.74%, transparent 11.74%, transparent 100%);">11.74%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 51.40%, transparent 51.40%, transparent 100%);">51.40%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 47.65%, transparent 47.65%, transparent 100%);">47.65 kg</td>
+          </tr>
+          <tr>
+            <td class="model-rank">7</td>
+            <td class="model-name"><a href="#">MaziyarPanahi/calme-2.1-qwen2.5-72b</a></td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 47.86%, transparent 47.86%, transparent 100%);">47.86%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 86.62%, transparent 86.62%, transparent 100%);">86.62%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 61.66%, transparent 61.66%, transparent 100%);">61.66%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 59.14%, transparent 59.14%, transparent 100%);">59.14%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 15.1%, transparent 15.1%, transparent 100%);">15.10%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 13.3%, transparent 13.3%, transparent 100%);">13.30%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 51.32%, transparent 51.32%, transparent 100%);">51.32%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 29.5%, transparent 29.5%, transparent 100%);">29.50 kg</td>
+          </tr>
+          <tr>
+            <td class="model-rank">8</td>
+            <td class="model-name"><a href="#">newsbang/Homer-v1.0-Qwen2.5-72B</a></td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 47.46%, transparent 47.46%, transparent 100%);">47.46%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 76.28%, transparent 76.28%, transparent 100%);">76.28%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 62.27%, transparent 62.27%, transparent 100%);">62.27%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 49.02%, transparent 49.02%, transparent 100%);">49.02%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 22.15%, transparent 22.15%, transparent 100%);">22.15%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 17.9%, transparent 17.9%, transparent 100%);">17.90%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 57.17%, transparent 57.17%, transparent 100%);">57.17%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 29.55%, transparent 29.55%, transparent 100%);">29.55 kg</td>
+          </tr>
+          <tr>
+            <td class="model-rank">9</td>
+            <td class="model-name"><a href="#">ehristoforu/qwen2.5-test-32b-it</a></td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 47.37%, transparent 47.37%, transparent 100%);">47.37%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 78.89%, transparent 78.89%, transparent 100%);">78.89%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 58.28%, transparent 58.28%, transparent 100%);">58.28%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 59.74%, transparent 59.74%, transparent 100%);">59.74%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 15.21%, transparent 15.21%, transparent 100%);">15.21%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 19.13%, transparent 19.13%, transparent 100%);">19.13%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 52.95%, transparent 52.95%, transparent 100%);">52.95%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 29.54%, transparent 29.54%, transparent 100%);">29.54 kg</td>
+          </tr>
+          <tr>
+            <td class="model-rank">10</td>
+            <td class="model-name"><a href="#">Saxo/Linkbricks-Horizon-AI-Avengers-V1-32B</a></td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 47.34%, transparent 47.34%, transparent 100%);">47.34%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 79.72%, transparent 79.72%, transparent 100%);">79.72%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 57.63%, transparent 57.63%, transparent 100%);">57.63%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 60.27%, transparent 60.27%, transparent 100%);">60.27%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 14.99%, transparent 14.99%, transparent 100%);">14.99%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 18.16%, transparent 18.16%, transparent 100%);">18.16%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 53.25%, transparent 53.25%, transparent 100%);">53.25%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 7.95%, transparent 7.95%, transparent 100%);">7.95 kg</td>
+          </tr>
+          <!-- 第11-20行数据 -->
+          <tr>
+            <td class="model-rank">11</td>
+            <td class="model-name"><a href="#">Model11</a></td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 45%, transparent 45%, transparent 100%);">45%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 75%, transparent 75%, transparent 100%);">75%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 55%, transparent 55%, transparent 100%);">55%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 50%, transparent 50%, transparent 100%);">50%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 20%, transparent 20%, transparent 100%);">20%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 15%, transparent 15%, transparent 100%);">15%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 50%, transparent 50%, transparent 100%);">50%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 30%, transparent 30%, transparent 100%);">30 kg</td>
+          </tr>
+          <tr>
+            <td class="model-rank">12</td>
+            <td class="model-name"><a href="#">Model12</a></td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 46%, transparent 46%, transparent 100%);">46%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 76%, transparent 76%, transparent 100%);">76%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 56%, transparent 56%, transparent 100%);">56%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 51%, transparent 51%, transparent 100%);">51%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 21%, transparent 21%, transparent 100%);">21%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 16%, transparent 16%, transparent 100%);">16%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 51%, transparent 51%, transparent 100%);">51%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 31%, transparent 31%, transparent 100%);">31 kg</td>
+          </tr>
+          <tr>
+            <td class="model-rank">13</td>
+            <td class="model-name"><a href="#">Model13</a></td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 47%, transparent 47%, transparent 100%);">47%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 77%, transparent 77%, transparent 100%);">77%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 57%, transparent 57%, transparent 100%);">57%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 52%, transparent 52%, transparent 100%);">52%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 22%, transparent 22%, transparent 100%);">22%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 17%, transparent 17%, transparent 100%);">17%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 52%, transparent 52%, transparent 100%);">52%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 32%, transparent 32%, transparent 100%);">32 kg</td>
+          </tr>
+          <tr>
+            <td class="model-rank">14</td>
+            <td class="model-name"><a href="#">Model14</a></td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 48%, transparent 48%, transparent 100%);">48%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 78%, transparent 78%, transparent 100%);">78%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 58%, transparent 58%, transparent 100%);">58%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 53%, transparent 53%, transparent 100%);">53%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 23%, transparent 23%, transparent 100%);">23%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 18%, transparent 18%, transparent 100%);">18%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 53%, transparent 53%, transparent 100%);">53%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 33%, transparent 33%, transparent 100%);">33 kg</td>
+          </tr>
+          <tr>
+            <td class="model-rank">15</td>
+            <td class="model-name"><a href="#">Model15</a></td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 49%, transparent 49%, transparent 100%);">49%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 79%, transparent 79%, transparent 100%);">79%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 59%, transparent 59%, transparent 100%);">59%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 54%, transparent 54%, transparent 100%);">54%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 24%, transparent 24%, transparent 100%);">24%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 19%, transparent 19%, transparent 100%);">19%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 54%, transparent 54%, transparent 100%);">54%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 34%, transparent 34%, transparent 100%);">34 kg</td>
+          </tr>
+          <tr>
+            <td class="model-rank">16</td>
+            <td class="model-name"><a href="#">Model16</a></td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 50%, transparent 50%, transparent 100%);">50%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 80%, transparent 80%, transparent 100%);">80%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 60%, transparent 60%, transparent 100%);">60%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 55%, transparent 55%, transparent 100%);">55%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 25%, transparent 25%, transparent 100%);">25%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 20%, transparent 20%, transparent 100%);">20%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 55%, transparent 55%, transparent 100%);">55%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 35%, transparent 35%, transparent 100%);">35 kg</td>
+          </tr>
+          <tr>
+            <td class="model-rank">17</td>
+            <td class="model-name"><a href="#">Model17</a></td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 51%, transparent 51%, transparent 100%);">51%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 81%, transparent 81%, transparent 100%);">81%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 61%, transparent 61%, transparent 100%);">61%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 56%, transparent 56%, transparent 100%);">56%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 26%, transparent 26%, transparent 100%);">26%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 21%, transparent 21%, transparent 100%);">21%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 56%, transparent 56%, transparent 100%);">56%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 36%, transparent 36%, transparent 100%);">36 kg</td>
+          </tr>
+          <tr>
+            <td class="model-rank">18</td>
+            <td class="model-name"><a href="#">Model18</a></td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 52%, transparent 52%, transparent 100%);">52%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 82%, transparent 82%, transparent 100%);">82%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 62%, transparent 62%, transparent 100%);">62%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 57%, transparent 57%, transparent 100%);">57%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 27%, transparent 27%, transparent 100%);">27%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 22%, transparent 22%, transparent 100%);">22%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 57%, transparent 57%, transparent 100%);">57%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 37%, transparent 37%, transparent 100%);">37 kg</td>
+          </tr>
+          <tr>
+            <td class="model-rank">19</td>
+            <td class="model-name"><a href="#">Model19</a></td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 53%, transparent 53%, transparent 100%);">53%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 83%, transparent 83%, transparent 100%);">83%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 63%, transparent 63%, transparent 100%);">63%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 58%, transparent 58%, transparent 100%);">58%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 28%, transparent 28%, transparent 100%);">28%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 23%, transparent 23%, transparent 100%);">23%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 58%, transparent 58%, transparent 100%);">58%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 38%, transparent 38%, transparent 100%);">38 kg</td>
+          </tr>
+          <tr>
+            <td class="model-rank">20</td>
+            <td class="model-name"><a href="#">Model20</a></td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 54%, transparent 54%, transparent 100%);">54%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 84%, transparent 84%, transparent 100%);">84%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 64%, transparent 64%, transparent 100%);">64%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 59%, transparent 59%, transparent 100%);">59%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 29%, transparent 29%, transparent 100%);">29%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 24%, transparent 24%, transparent 100%);">24%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 59%, transparent 59%, transparent 100%);">59%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 39%, transparent 39%, transparent 100%);">39 kg</td>
+          </tr>
+          <!-- 第21-30行数据 -->
+          <tr>
+            <td class="model-rank">21</td>
+            <td class="model-name"><a href="#">Model21</a></td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 55%, transparent 55%, transparent 100%);">55%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 85%, transparent 85%, transparent 100%);">85%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 65%, transparent 65%, transparent 100%);">65%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 60%, transparent 60%, transparent 100%);">60%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 30%, transparent 30%, transparent 100%);">30%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 25%, transparent 25%, transparent 100%);">25%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 60%, transparent 60%, transparent 100%);">60%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 40%, transparent 40%, transparent 100%);">40 kg</td>
+          </tr>
+          <tr>
+            <td class="model-rank">22</td>
+            <td class="model-name"><a href="#">Model22</a></td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 56%, transparent 56%, transparent 100%);">56%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 86%, transparent 86%, transparent 100%);">86%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 66%, transparent 66%, transparent 100%);">66%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 61%, transparent 61%, transparent 100%);">61%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 31%, transparent 31%, transparent 100%);">31%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 26%, transparent 26%, transparent 100%);">26%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 61%, transparent 61%, transparent 100%);">61%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 41%, transparent 41%, transparent 100%);">41 kg</td>
+          </tr>
+          <tr>
+            <td class="model-rank">23</td>
+            <td class="model-name"><a href="#">Model23</a></td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 57%, transparent 57%, transparent 100%);">57%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 87%, transparent 87%, transparent 100%);">87%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 67%, transparent 67%, transparent 100%);">67%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 62%, transparent 62%, transparent 100%);">62%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 32%, transparent 32%, transparent 100%);">32%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 27%, transparent 27%, transparent 100%);">27%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 62%, transparent 62%, transparent 100%);">62%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 42%, transparent 42%, transparent 100%);">42 kg</td>
+          </tr>
+          <tr>
+            <td class="model-rank">24</td>
+            <td class="model-name"><a href="#">Model24</a></td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 58%, transparent 58%, transparent 100%);">58%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 88%, transparent 88%, transparent 100%);">88%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 68%, transparent 68%, transparent 100%);">68%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 63%, transparent 63%, transparent 100%);">63%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 33%, transparent 33%, transparent 100%);">33%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 28%, transparent 28%, transparent 100%);">28%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 63%, transparent 63%, transparent 100%);">63%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 43%, transparent 43%, transparent 100%);">43 kg</td>
+          </tr>
+          <tr>
+            <td class="model-rank">25</td>
+            <td class="model-name"><a href="#">Model25</a></td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 59%, transparent 59%, transparent 100%);">59%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 89%, transparent 89%, transparent 100%);">89%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 69%, transparent 69%, transparent 100%);">69%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 64%, transparent 64%, transparent 100%);">64%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 34%, transparent 34%, transparent 100%);">34%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 29%, transparent 29%, transparent 100%);">29%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 64%, transparent 64%, transparent 100%);">64%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 44%, transparent 44%, transparent 100%);">44 kg</td>
+          </tr>
+          <tr>
+            <td class="model-rank">26</td>
+            <td class="model-name"><a href="#">Model26</a></td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 60%, transparent 60%, transparent 100%);">60%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 90%, transparent 90%, transparent 100%);">90%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 70%, transparent 70%, transparent 100%);">70%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 65%, transparent 65%, transparent 100%);">65%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 35%, transparent 35%, transparent 100%);">35%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 30%, transparent 30%, transparent 100%);">30%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 65%, transparent 65%, transparent 100%);">65%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 45%, transparent 45%, transparent 100%);">45 kg</td>
+          </tr>
+          <tr>
+            <td class="model-rank">27</td>
+            <td class="model-name"><a href="#">Model27</a></td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 61%, transparent 61%, transparent 100%);">61%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 91%, transparent 91%, transparent 100%);">91%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 71%, transparent 71%, transparent 100%);">71%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 66%, transparent 66%, transparent 100%);">66%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 36%, transparent 36%, transparent 100%);">36%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 31%, transparent 31%, transparent 100%);">31%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 66%, transparent 66%, transparent 100%);">66%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 46%, transparent 46%, transparent 100%);">46 kg</td>
+          </tr>
+          <tr>
+            <td class="model-rank">28</td>
+            <td class="model-name"><a href="#">Model28</a></td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 62%, transparent 62%, transparent 100%);">62%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 92%, transparent 92%, transparent 100%);">92%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 72%, transparent 72%, transparent 100%);">72%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 67%, transparent 67%, transparent 100%);">67%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 37%, transparent 37%, transparent 100%);">37%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 32%, transparent 32%, transparent 100%);">32%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 67%, transparent 67%, transparent 100%);">67%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 47%, transparent 47%, transparent 100%);">47 kg</td>
+          </tr>
+          <tr>
+            <td class="model-rank">29</td>
+            <td class="model-name"><a href="#">Model29</a></td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 63%, transparent 63%, transparent 100%);">63%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 93%, transparent 93%, transparent 100%);">93%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 73%, transparent 73%, transparent 100%);">73%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 68%, transparent 68%, transparent 100%);">68%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 38%, transparent 38%, transparent 100%);">38%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 33%, transparent 33%, transparent 100%);">33%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 68%, transparent 68%, transparent 100%);">68%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 48%, transparent 48%, transparent 100%);">48 kg</td>
+          </tr>
+          <tr>
+            <td class="model-rank">30</td>
+            <td class="model-name"><a href="#">Model30</a></td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 64%, transparent 64%, transparent 100%);">64%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 94%, transparent 94%, transparent 100%);">94%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 74%, transparent 74%, transparent 100%);">74%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 69%, transparent 69%, transparent 100%);">69%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 39%, transparent 39%, transparent 100%);">39%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 34%, transparent 34%, transparent 100%);">34%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 69%, transparent 69%, transparent 100%);">69%</td>
+            <td class="metric-value" style="background: linear-gradient(to right, #4CAF50 0%, #4CAF50 49%, transparent 49%, transparent 100%);">49 kg</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- HuggingFace Dataset -->
+  <section id="hf-dataset">
+    <h2>Huggingface Dataset</h2>
+    <table class="hf-dataset">
+      <thead>
+        <tr><th>Split</th><th>Size</th><th>Examples</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>train</td><td>2.5 GB</td><td>120 000</td></tr>
+        <tr><td>validation</td><td>0.3 GB</td><td>15 000</td></tr>
+        <tr><td>test</td><td>0.3 GB</td><td>15 000</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Overall Pipeline -->
+  <section id="pipeline">
+    <h2>Overall pipeline</h2>
+    <div class="pipeline-grid">
+      <div class="pipeline-item">
+        <img src="images/1.png" alt="Metric 1">
+        <div class="caption">图1。...比较图</div>
+      </div>
+      <div class="pipeline-item">
+        <img src="images/2.png" alt="Metric 2">
+        <div class="caption">图2。...比较图</div>
+      </div>
+      <div class="pipeline-item">
+        <img src="images/3.png" alt="Metric 3">
+        <div class="caption">图3。...比较图</div>
+      </div>
+      <div class="pipeline-item">
+        <img src="images/4.png" alt="Metric 4">
+        <div class="caption">图4。...比较图</div>
+      </div>
+      <div class="pipeline-item">
+        <img src="images/5.png" alt="Metric 5">
+        <div class="caption">图5。...比较图</div>
+      </div>
+      <div class="pipeline-item">
+        <img src="images/6.png" alt="Metric 6">
+        <div class="caption">图6。...比较图</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="links">
+    <h2>Related Links</h2>
+    <ul>
+      <li><a href="paper.pdf" target="_blank">Paper (PDF)</a></li>
+      <li><a href="https://github.com/    " target="_blank">Code (GitHub)</a></li>
+      <li><a href="supp.zip">Supplementary Material</a></li>
+    </ul>
+  </section>
+
+  <section id="bibtex">
+    <h2>BibTeX</h2>
+    <pre>@article{2025xxx,
+  author  = {Your Name and Co-Author},
+  title   = {Your Project Title},
+  journal = {Conference},
+  year    = {2025},
+}</pre>
+  </section>
+</main>
+
+<footer>This website is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License.
+
+This means you are free to borrow the source code of this website, we just ask that you link back to this page in the footer. Please remember to remove the analytics code included in the header of the website which you do not want on your website.</footer>
+
+<script>
+  // 切换高级筛选面板的显示/隐藏
+  document.querySelector('.advanced-filter-btn').addEventListener('click', function() {
+    const panel = document.querySelector('.advanced-filter-panel');
+    if (panel.style.display === 'block') {
+      panel.style.display = 'none';
+    } else {
+      panel.style.display = 'block';
+    }
+  });
+  
+  // 初始化时隐藏高级筛选面板
+  document.querySelector('.advanced-filter-panel').style.display = 'none';
+  
+  // 快速筛选标签点击效果
+  document.querySelectorAll('.quick-filter-tabs .tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      // 这里是修改后的代码
+      this.classList.toggle('tab-active');
+    });
+  });
+
+  // 显示表格选项面板
+  document.getElementById('table-options-link').addEventListener('click', function(e) {
+    e.preventDefault();
+    const panel = document.getElementById('table-options-panel');
+    if (panel.style.display === 'block') {
+      panel.style.display = 'none';
+    } else {
+      panel.style.display = 'block';
+    }
+  });
+
+  // 显示列可见性面板
+  document.getElementById('column-visibility-link').addEventListener('click', function(e) {
+    e.preventDefault();
+    const panel = document.getElementById('column-visibility-panel');
+    if (panel.style.display === 'block') {
+      panel.style.display = 'none';
+    } else {
+      panel.style.display = 'block';
+    }
+  });
+
+  // 重置按钮功能
+  document.querySelectorAll('.reset-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      // 这里可以添加重置逻辑
+      alert('Reset settings');
+    });
+  });
+
+  // 选项按钮点击效果
+  document.querySelectorAll('.option-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const parent = this.parentElement;
+      parent.querySelectorAll('.option-btn').forEach(b => {
+        b.classList.remove('active');
+      });
+      this.classList.add('active');
+    });
+  });
+
+  // 标签按钮点击效果
+  document.querySelectorAll('.tag-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      this.classList.toggle('active');
+    });
+  });
+</script>
+</body>
+</html>
