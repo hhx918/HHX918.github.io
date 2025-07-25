@@ -51,7 +51,7 @@
     }
     
     /* HuggingFace Dataset 表格居中 */
-     table.hf-dataset {
+       table.hf-dataset {
     margin: 0 auto;
     border-collapse: collapse;
     width: 70%;
@@ -62,30 +62,18 @@
     border: 1px solid #444;
     padding: 8px 12px;
     text-align: center;
-    transition: background-color 0.3s;
   }
   table.hf-dataset th {
     background: #333;
   }
-  table.hf-dataset tr:hover {
+  table.hf-dataset tr:nth-child(odd) {
     background: #333;
   }
-  table.hf-dataset td {
-    position: relative;
+  table.hf-dataset tr:nth-child(even) {
+    background: #444;
   }
-  table.hf-dataset td::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(to right, var(--green) 0%, var(--blue) 100%);
-    opacity: 0.1;
-    transition: opacity 0.3s;
-  }
-  table.hf-dataset tr:hover td::before {
-    opacity: 0.3;
+  table.hf-dataset tr:hover {
+    background: #555;
   }
     
     /* Overall Pipeline 六张指标图 */
